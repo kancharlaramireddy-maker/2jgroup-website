@@ -3,7 +3,7 @@ import {useEffect,useState} from 'react';
 import {Tabs,TabsList,TabsTrigger,TabsContent} from '@/components/ui/tabs';
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {api,money,unit} from '../catalog';
-export default function Admin({owner}:{owner:boolean}){const [data,setData]=useState<any>(null),[error,setError]=useState(''),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),[q,setQ]=useState(''),[editing,setEditing]=useState<any>(null),[view,setView]=useState<any>(null),[email,setEmail]=useState(''),[role,setRole]=useState('sales');
+export function AdminPanel({owner}:{owner:boolean}){const [data,setData]=useState<any>(null),[error,setError]=useState(''),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),[q,setQ]=useState(''),[editing,setEditing]=useState<any>(null),[view,setView]=useState<any>(null),[email,setEmail]=useState(''),[role,setRole]=useState('sales');
 async function load(){try{setData(await api('admin'));}catch(e:any){setError(e.message);}}useEffect(()=>{load();},[]);
 async function action(path:string,payload:any={}){setBusy(true);setError('');setMessage('');try{const r=await api(path,payload);if(r.url){window.location.assign(r.url);return;}setMessage(r.message||'Saved.');setEditing(null);await load();}catch(e:any){setError(e.message);}finally{setBusy(false);}}
 if(!data)return <main className="access"><h1>2J Office</h1><p>{error||'Loading shared records…'}</p><button onClick={load}>Try again</button></main>;
