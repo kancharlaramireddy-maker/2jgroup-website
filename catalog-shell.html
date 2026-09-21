@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#17271f" />
+  <title>2J Group Wholesale Desk</title>
+  <link rel="stylesheet" href="/catalog/styles.css" />
+  <link rel="icon" href="/favicon.svg" />
+  <style>[hidden]{display:none!important}.checkout-fields{display:grid;gap:12px;margin:20px 0}.checkout-fields label{display:grid;gap:6px}.checkout-fields input,.shop-fields select{padding:10px;border:1px solid #c9d3cb;border-radius:7px;font:inherit;width:100%}.order-confirmation{padding:20px;background:#e6f5eb;border-radius:12px}.order-feedback{white-space:pre-wrap;margin:12px 0;font-size:16px}</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#catalog" aria-label="2J Group home">
+      <span class="brand-mark">2J</span>
+      <span><strong>2J Group</strong><small data-i18n="brandSubtitle">Wholesale beauty desk</small></span>
+    </a>
+    <div class="top-actions">
+      <a class="btn ghost" id="staffLogin" href="/sales">Salesperson login · 영업 직원 로그인</a>
+      <a class="btn ghost" id="officeLink" href="/admin" hidden>Office · 사무실</a>
+      <a class="btn ghost" id="historyLink" href="/sales/orders" hidden>My orders · 내 주문</a>
+      <a class="btn ghost" id="publicLink" href="/" hidden>Public catalog · 일반 카탈로그</a>
+      <a class="btn ghost" id="signoutLink" href="/signout-with-chatgpt?return_to=/" hidden>Sign out · 로그아웃</a>
+      <span class="sample-pill"><i></i> <span data-i18n="sampleCatalog">Sample catalog</span></span>
+      <div class="language-switch" role="group" aria-label="Language">
+        <button class="lang-option active" type="button" data-lang="en">EN</button>
+        <button class="lang-option" type="button" data-lang="ko">한국어</button>
+      </div>
+      <button class="btn ghost" id="manageBtn" type="button" data-i18n="manageProducts" hidden>Manage products</button>
+      <button class="btn order-button" id="openOrderBtn" type="button">
+        <span data-i18n="order">Order</span> <span id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="pageTitle">
+      <div>
+        <p class="eyebrow" data-i18n="fieldSalesCatalog">FIELD SALES CATALOG</p>
+        <h1 id="pageTitle" data-i18n="heroTitle">Find it. Show it. Add it.</h1>
+        <p data-i18n="heroBody">Build a shop order in minutes, then create a clean handoff for the back office.</p>
+      </div>
+      <div class="status-card">
+        <span data-i18n="currentOrder">Current order</span>
+        <strong id="heroOrderTotal">$0.00</strong>
+        <small id="heroOrderItems" data-i18n="noProductsSelected">No products selected</small>
+      </div>
+    </section>
+
+    <section class="workspace" id="catalog" aria-label="Product catalog">
+      <div class="catalog-panel">
+        <div class="ai-search">
+          <span class="spark" aria-hidden="true">✦</span>
+          <div class="search-copy">
+            <label for="searchInput" data-i18n="askCatalog">Ask the catalog</label>
+            <input id="searchInput" type="search" autocomplete="off" placeholder='Try “oils under $15” or “best sellers for braids”' data-i18n-placeholder="searchPlaceholder" />
+          </div>
+          <button id="aiSearchBtn" class="btn ai-btn" type="button" data-i18n="search">Search</button>
+        </div>
+        <div id="aiResponse" class="ai-response" role="status" aria-live="polite"></div>
+
+        <div class="filter-row">
+          <div id="categoryFilters" class="chips" aria-label="Filter by category"></div>
+          <select id="sortSelect" aria-label="Sort products" data-i18n-aria="sortProducts">
+            <option value="featured" data-i18n="featured">Featured</option>
+            <option value="price-asc" data-i18n="priceLowHigh">Price: low to high</option>
+            <option value="price-desc" data-i18n="priceHighLow">Price: high to low</option>
+            <option value="name" data-i18n="name">Name</option>
+          </select>
+        </div>
+
+        <div class="results-heading">
+          <h2 data-i18n="wholesaleCatalog">Wholesale catalog</h2>
+          <span id="resultCount">0 products</span>
+        </div>
+        <div id="productGrid" class="product-grid"></div>
+        <button id="showMoreProducts" type="button" class="btn dark wide" style="margin:20px 0">Show more products · 제품 더 보기</button>
+        <div id="emptyState" class="empty-state" hidden>
+          <span>⌕</span>
+          <h3 data-i18n="noMatches">No matching products</h3>
+          <p data-i18n="broaderSearch">Try a broader description or clear the filters.</p>
+          <button id="clearFiltersBtn" class="btn dark" type="button" data-i18n="clearSearch">Clear search</button>
+        </div>
+      </div>
+
+      <aside class="order-panel" id="orderPanel" aria-label="Current order">
+        <div class="panel-head">
+          <div><span class="eyebrow" data-i18n="currentOrderUpper">CURRENT ORDER</span><h2 data-i18n="orderSummary">Order summary</h2></div>
+          <button id="closeOrderBtn" class="icon-button close-mobile" type="button" aria-label="Close order">×</button>
+        </div>
+        <div class="shop-fields">
+          <label><span data-i18n="retailShop">Retail shop</span><input id="shopName" placeholder="Shop name" data-i18n-placeholder="shopName" /></label>
+          <div class="field-pair">
+            <label><span data-i18n="contact">Contact</span><input id="shopContact" placeholder="Name / phone" data-i18n-placeholder="namePhone" /></label>
+            <label><span data-i18n="salesperson">Salesperson</span><input id="salesperson" placeholder="Your name" data-i18n-placeholder="yourName" /></label>
+          </div>
+        </div>
+        <div id="cartItems" class="cart-items"></div>
+        <div id="cartEmpty" class="cart-empty">
+          <div class="bag-icon">＋</div>
+          <strong data-i18n="orderEmpty">Your order is empty</strong>
+          <span data-i18n="addFromCatalog">Add products from the catalog.</span>
+        </div>
+        <div class="order-footer">
+          <div class="total-row"><span data-i18n="units">Units</span><strong id="unitCount">0</strong></div>
+          <div class="total-row grand"><span data-i18n="estimatedTotal">Estimated total</span><strong id="cartTotal">$0.00</strong></div>
+          <label class="notes-label"><span data-i18n="orderNote">Order note</span><textarea id="orderNote" rows="2" placeholder="Delivery notes or special requests" data-i18n-placeholder="notePlaceholder"></textarea></label>
+          <button id="reviewBtn" class="btn primary wide" type="button" disabled data-i18n="reviewHandoff">Review handoff</button>
+          <small class="safe-note" data-i18n="quickbooksSafe">Prototype only — no order or invoice is sent to QuickBooks.</small>
+        </div>
+      </aside>
+      <button id="overlay" class="overlay" type="button" aria-label="Close panel"></button>
+    </section>
+  </main>
+
+  <dialog id="handoffDialog" class="modal">
+    <form method="dialog" class="modal-shell">
+      <div class="modal-head">
+        <div><span class="eyebrow" data-i18n="backOfficeHandoff">BACK-OFFICE HANDOFF</span><h2 data-i18n="orderReady">Order ready to share</h2></div>
+        <button class="icon-button" value="cancel" aria-label="Close">×</button>
+      </div>
+      <div id="handoffContent" class="handoff-content"></div>
+      <div class="modal-actions">
+        <button id="copyOrderBtn" class="btn dark" type="button" data-i18n="copySummary">Copy summary</button>
+        <button id="downloadCsvBtn" class="btn dark" type="button" data-i18n="downloadCsv">Download CSV</button>
+        <button id="downloadOrderBtn" class="btn primary" type="button" data-i18n="downloadTxt">Download .txt</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="manageDialog" class="modal manage-modal">
+    <div class="modal-shell">
+      <div class="modal-head">
+        <div><span class="eyebrow" data-i18n="catalogAdmin">CATALOG ADMIN</span><h2 data-i18n="manageSampleProducts">Manage sample products</h2></div>
+        <button id="closeManageBtn" class="icon-button" type="button" aria-label="Close">×</button>
+      </div>
+      <div class="admin-layout">
+        <form id="productForm" class="product-form">
+          <h3 id="productFormTitle" data-i18n="enrollProduct">Enroll a product</h3>
+          <label><span data-i18n="productName">Product name</span><input id="newName" required placeholder="e.g. Curl Defining Cream" data-i18n-placeholder="productExample" /></label>
+          <div class="field-pair">
+            <label><span data-i18n="category">Category</span><input id="newCategory" required placeholder="MM" /></label>
+            <label><span data-i18n="wholesalePrice">Wholesale price</span><input id="newPrice" required type="number" min="0.01" step="0.01" placeholder="12.00" /></label>
+          </div>
+          <label><span data-i18n="description">Description</span><textarea id="newDescription" rows="4" data-i18n-placeholder="descriptionPlaceholder" placeholder="Product details visible in the catalog photo"></textarea></label>
+          <label><span data-i18n="tags">Tags</span><input id="newTags" placeholder="curl, moisture, salon" data-i18n-placeholder="tagsExample" /></label>
+          <label><span data-i18n="productPhoto">Product picture</span><input id="newImage" type="file" accept="image/*" /></label>
+          <button id="saveProductBtn" class="btn primary wide" type="submit" data-i18n="addCatalog">Add to catalog</button>
+          <button id="cancelEditBtn" class="btn ghost wide" type="button" data-i18n="cancelEdit" hidden>Cancel edit</button>
+          <p class="form-note" data-i18n="savedBrowser">Saved in this browser for prototype testing.</p>
+        </form>
+        <div class="admin-list-wrap">
+          <div class="admin-list-head"><h3 data-i18n="activeProducts">Active products</h3><span id="adminCount"></span></div>
+          <input id="adminSearch" class="admin-search" type="search" data-i18n-placeholder="adminSearchPlaceholder" placeholder="Find by item number or description" />
+          <div id="adminList" class="admin-list"></div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/catalog/catalog-products.js"></script>
+  <script src="/catalog/app.js"></script>
+  <script src="/catalog/ordering.js"></script>
+</body>
+</html>
